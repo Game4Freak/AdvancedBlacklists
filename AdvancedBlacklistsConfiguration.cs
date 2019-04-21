@@ -17,8 +17,8 @@ namespace Game4Freak.AdvancedBlacklists
 
         public void LoadDefaults()
         {
-            equipIgnoreBlacklistPermission = "advancedblacklist.ignore.equip";
-            pickupIgnoreBlacklistPermission = "advancedblacklist.ignore.pickup";
+            equipIgnoreBlacklistPermission = "advancedblacklists.ignore.equip";
+            pickupIgnoreBlacklistPermission = "advancedblacklists.ignore.pickup";
 
             equipBlocklistNames = new List<string>();
             equipBlocklist = new List<List<int>>();
