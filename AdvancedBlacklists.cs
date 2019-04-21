@@ -77,7 +77,7 @@ namespace Game4Freak.AdvancedBlacklists
         private void onItemPickup(Player player, byte x, byte y, uint instanceID, byte to_x, byte to_y, byte to_rot, byte to_page, ItemData itemData, ref bool shouldAllow)
         {
             UnturnedPlayer uPlayer = UnturnedPlayer.FromPlayer(player);
-            if (uPlayer.HasPermission(Configuration.Instance.pickupIgnoreBlacklistPermission.ToLower() + ".item." + itemData.item.id))
+            if (uPlayer.HasPermission(Configuration.Instance.pickupIgnoreBlacklistPermission.ToLower()) || uPlayer.HasPermission(Configuration.Instance.pickupIgnoreBlacklistPermission.ToLower() + ".item." + itemData.item.id))
             {
                 return;
             }
@@ -93,13 +93,13 @@ namespace Game4Freak.AdvancedBlacklists
 
         private void onItemEquip(UnturnedPlayer uPlayer, PlayerEquipment equipment)
         {
-            if (uPlayer.HasPermission(Configuration.Instance.equipIgnoreBlacklistPermission.ToLower() + ".item." + equipment.itemID))
+            if (uPlayer.HasPermission(Configuration.Instance.equipIgnoreBlacklistPermission.ToLower()) || uPlayer.HasPermission(Configuration.Instance.equipIgnoreBlacklistPermission.ToLower() + ".item." + equipment.itemID))
             {
                 return;
             }
             foreach (var blacklistname in Configuration.Instance.equipBlocklistNames)
             {
-                if (!uPlayer.HasPermission(Configuration.Instance.pickupIgnoreBlacklistPermission.ToLower() + ".blacklist." + blacklistname.ToLower()) && Configuration.Instance.equipBlocklist.ElementAt(Configuration.Instance.equipBlocklistNames.IndexOf(blacklistname)).Contains(equipment.itemID))
+                if (!uPlayer.HasPermission(Configuration.Instance.equipIgnoreBlacklistPermission.ToLower() + ".blacklist." + blacklistname.ToLower()) && Configuration.Instance.equipBlocklist.ElementAt(Configuration.Instance.equipBlocklistNames.IndexOf(blacklistname)).Contains(equipment.itemID))
                 {
                     UnturnedChat.Say(uPlayer, Instance.Translations.Instance.Translate("noAllow"), Color.red);
                     equipment.dequip();
