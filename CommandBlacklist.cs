@@ -43,7 +43,7 @@ namespace Game4Freak.AdvancedBlacklists
         {
             get
             {
-                return new List<string>() { "advancedblacklist" };
+                return new List<string>() { "advancedblacklists" };
             }
         }
 
