@@ -22,7 +22,7 @@ namespace Game4Freak.AdvancedBlacklists
     public class AdvancedBlacklists : RocketPlugin<AdvancedBlacklistsConfiguration>
     {
         public static AdvancedBlacklists Instance;
-        public const string VERSION = "0.1.0.0";
+        public const string VERSION = "1.0.0.0";
         int frame;
 
         protected override void Load()
