@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="AdvancedBlacklists.cs" />
     <Compile Include="AdvancedBlacklistsConfiguration.cs" />
+    <Compile Include="Blacklist.cs" />
     <Compile Include="CommandBlacklist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

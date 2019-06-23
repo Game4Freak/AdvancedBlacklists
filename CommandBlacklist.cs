@@ -61,89 +61,117 @@ namespace Game4Freak.AdvancedBlacklists
                 {
                     if (command[1].ToLower() == "equip")
                     {
-                        if (AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Contains(command[2].ToLower()))
+                        if (AdvancedBlacklists.Instance.getEquipBlacklistByName(command[2].ToLower()) != null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("exists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Add(command[2].ToLower());
-                        AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.Add(new List<int>());
+                        AdvancedBlacklists.Instance.Configuration.Instance.equipBlacklists.Add(new Blacklist(command[2].ToLower()));
                         AdvancedBlacklists.Instance.Configuration.Save();
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("addblacklist", command[2]), Color.cyan);
                         return;
                     }
                     else if (command[1].ToLower() == "pickup")
                     {
-                        if (AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Contains(command[2].ToLower()))
+                        if (AdvancedBlacklists.Instance.getPickupBlacklistByName(command[2].ToLower()) != null)
                         { 
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("exists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Add(command[2].ToLower());
-                        AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.Add(new List<int>());
+                        AdvancedBlacklists.Instance.Configuration.Instance.pickupBlacklists.Add(new Blacklist(command[2].ToLower()));
+                        AdvancedBlacklists.Instance.Configuration.Save();
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("addblacklist", command[2]), Color.cyan);
+                        return;
+                    }
+                    else if (command[1].ToLower() == "vehicle")
+                    {
+                        if (AdvancedBlacklists.Instance.getVehicleBlacklistByName(command[2].ToLower()) != null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("exists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        AdvancedBlacklists.Instance.Configuration.Instance.vehicleBlacklists.Add(new Blacklist(command[2].ToLower()));
                         AdvancedBlacklists.Instance.Configuration.Save();
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("addblacklist", command[2]), Color.cyan);
                         return;
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup <blacklist>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist add equip|pickup|vehicle <blacklist>"), Color.red);
                         return;
                     }
                 }
                 else if (command.Length > 3)
                 {
-                    int ID;
-                    if (!int.TryParse(command[3], out ID))
+                    ushort ID;
+                    if (!ushort.TryParse(command[3], out ID))
                     {
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalidnumber", command[3]), Color.red);
                         return;
                     }
                     if (command[1].ToLower() == "equip")
                     {
-                        if (!AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getEquipBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        List<int> blocklistIDs = AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.IndexOf(command[2].ToLower()));
-                        if (blocklistIDs.Contains(ID))
+                        if (currentBlacklist.itemIDs.Contains(ID))
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("has", command[2].ToLower(), ID), Color.red);
                             return;
                         }
-                        AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.IndexOf(command[2].ToLower())).Add(ID);
+                        currentBlacklist.itemIDs.Add(ID);
                         AdvancedBlacklists.Instance.Configuration.Save();
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("additem", ID, command[2].ToLower()), Color.cyan);
                         return;
                     }
                     else if (command[1].ToLower() == "pickup")
                     {
-                        if (!AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getPickupBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        List<int> blocklistIDs = AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.IndexOf(command[2].ToLower()));
-                        if (blocklistIDs.Contains(ID))
+                        if (currentBlacklist.itemIDs.Contains(ID))
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("has", command[2].ToLower(), ID), Color.red);
                             return;
                         }
-                        AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.IndexOf(command[2].ToLower())).Add(ID);
+                        currentBlacklist.itemIDs.Add(ID);
+                        AdvancedBlacklists.Instance.Configuration.Save();
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("additem", ID, command[2].ToLower()), Color.cyan);
+                        return;
+                    }
+                    else if (command[1].ToLower() == "vehicle")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getVehicleBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        if (currentBlacklist.itemIDs.Contains(ID))
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("has", command[2].ToLower(), ID), Color.red);
+                            return;
+                        }
+                        currentBlacklist.itemIDs.Add(ID);
                         AdvancedBlacklists.Instance.Configuration.Save();
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("additem", ID, command[2].ToLower()), Color.cyan);
                         return;
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup <blacklist> <itemID>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
                         return;
                     }
                 }
                 else
                 {
-                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup <blacklist> <itemID>"), Color.red);
+                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
                     return;
                 }
             }
@@ -153,10 +181,10 @@ namespace Game4Freak.AdvancedBlacklists
                 {
                     if (command[1].ToLower() == "equip")
                     {
-                        if (AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getEquipBlacklistByName(command[2]);
+                        if (currentBlacklist != null)
                         {
-                            AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.RemoveAt(AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.IndexOf(command[2].ToLower()));
-                            AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Remove(command[2].ToLower());
+                            AdvancedBlacklists.Instance.Configuration.Instance.equipBlacklists.Remove(currentBlacklist);
                             AdvancedBlacklists.Instance.Configuration.Save();
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeblacklist", command[2]), Color.cyan);
                             return;
@@ -166,10 +194,23 @@ namespace Game4Freak.AdvancedBlacklists
                     }
                     else if (command[1].ToLower() == "pickup")
                     {
-                        if (AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getPickupBlacklistByName(command[2]);
+                        if (currentBlacklist != null)
                         {
-                            AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.RemoveAt(AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.IndexOf(command[2].ToLower()));
-                            AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Remove(command[2].ToLower());
+                            AdvancedBlacklists.Instance.Configuration.Instance.pickupBlacklists.Remove(currentBlacklist);
+                            AdvancedBlacklists.Instance.Configuration.Save();
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeblacklist", command[2]), Color.cyan);
+                            return;
+                        }
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                        return;
+                    }
+                    else if (command[1].ToLower() == "vehicle")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getVehicleBlacklistByName(command[2]);
+                        if (currentBlacklist != null)
+                        {
+                            AdvancedBlacklists.Instance.Configuration.Instance.vehicleBlacklists.Remove(currentBlacklist);
                             AdvancedBlacklists.Instance.Configuration.Save();
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeblacklist", command[2]), Color.cyan);
                             return;
@@ -179,29 +220,29 @@ namespace Game4Freak.AdvancedBlacklists
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist remove equip|pickup <blacklist>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist remove equip|pickup|vehicle <blacklist>"), Color.red);
                         return;
                     }
                 }
                 else if (command.Length > 3)
                 {
-                    int ID;
-                    if (!int.TryParse(command[3], out ID))
+                    ushort ID;
+                    if (!ushort.TryParse(command[3], out ID))
                     {
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalidnumber", command[3]), Color.red);
                         return;
                     }
                     if (command[1].ToLower() == "equip")
                     {
-                        if (!AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getEquipBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        List<int> blocklistIDs = AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.IndexOf(command[2].ToLower()));
-                        if (blocklistIDs.Contains(ID))
+                        if (currentBlacklist.itemIDs.Contains(ID))
                         {
-                            AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.IndexOf(command[2].ToLower())).Remove(ID);
+                            currentBlacklist.itemIDs.Remove(ID);
                             AdvancedBlacklists.Instance.Configuration.Save();
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeitem", ID, command[2].ToLower()), Color.cyan);
                             return;
@@ -211,15 +252,33 @@ namespace Game4Freak.AdvancedBlacklists
                     }
                     else if (command[1].ToLower() == "pickup")
                     {
-                        if (!AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getPickupBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        List<int> blocklistIDs = AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.IndexOf(command[2].ToLower()));
-                        if (blocklistIDs.Contains(ID))
+                        if (currentBlacklist.itemIDs.Contains(ID))
                         {
-                            AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.IndexOf(command[2].ToLower())).Remove(ID);
+                            currentBlacklist.itemIDs.Remove(ID);
+                            AdvancedBlacklists.Instance.Configuration.Save();
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeitem", ID, command[2].ToLower()), Color.cyan);
+                            return;
+                        }
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("nohas", command[2].ToLower(), ID), Color.red);
+                        return;
+                    }
+                    else if (command[1].ToLower() == "vehicle")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getVehicleBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        if (currentBlacklist.itemIDs.Contains(ID))
+                        {
+                            currentBlacklist.itemIDs.Remove(ID);
                             AdvancedBlacklists.Instance.Configuration.Save();
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeitem", ID, command[2].ToLower()), Color.cyan);
                             return;
@@ -229,13 +288,13 @@ namespace Game4Freak.AdvancedBlacklists
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist remove equip|pickup <blacklist> <itemID>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist remove equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
                         return;
                     }
                 }
                 else
                 {
-                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist remove equip|pickup <blacklist> <itemID>"), Color.red);
+                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist remove equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
                     return;
                 }
             }
@@ -246,9 +305,9 @@ namespace Game4Freak.AdvancedBlacklists
                     if (command[1].ToLower() == "equip")
                     {
                         string message = "Equip blocklists: ";
-                        foreach (var blacklistname in AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames)
+                        foreach (var blacklist in AdvancedBlacklists.Instance.Configuration.Instance.equipBlacklists)
                         {
-                            message = message + blacklistname + ", ";
+                            message = message + blacklist.name + ", ";
                         }
                         UnturnedChat.Say(caller, message, Color.cyan);
                         return;
@@ -256,16 +315,26 @@ namespace Game4Freak.AdvancedBlacklists
                     else if (command[1].ToLower() == "pickup")
                     {
                         string message = "Pickup blocklists: ";
-                        foreach (var blacklistname in AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames)
+                        foreach (var blacklist in AdvancedBlacklists.Instance.Configuration.Instance.pickupBlacklists)
                         {
-                            message = message + blacklistname + ", ";
+                            message = message + blacklist.name + ", ";
+                        }
+                        UnturnedChat.Say(caller, message, Color.cyan);
+                        return;
+                    }
+                    else if (command[1].ToLower() == "vehicle")
+                    {
+                        string message = "Vehicle blocklists: ";
+                        foreach (var blacklist in AdvancedBlacklists.Instance.Configuration.Instance.vehicleBlacklists)
+                        {
+                            message = message + blacklist.name + ", ";
                         }
                         UnturnedChat.Say(caller, message, Color.cyan);
                         return;
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist list equip|pickup"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle"), Color.red);
                         return;
                     }
                 }
@@ -273,14 +342,14 @@ namespace Game4Freak.AdvancedBlacklists
                 {
                     if (command[1].ToLower() == "equip")
                     {
-                        if (!AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getEquipBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        List<int> blocklistIDs = AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.equipBlocklistNames.IndexOf(command[2].ToLower()));
                         string message = "Blocklist: " + command[2].ToLower() + " { ";
-                        foreach (var id in blocklistIDs)
+                        foreach (var id in currentBlacklist.itemIDs)
                         {
                             message = message + id + ", ";
                         }
@@ -289,14 +358,30 @@ namespace Game4Freak.AdvancedBlacklists
                     }
                     else if (command[1].ToLower() == "pickup")
                     {
-                        if (!AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.Contains(command[2].ToLower()))
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getPickupBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
                         {
                             UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                             return;
                         }
-                        List<int> blocklistIDs = AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklist.ElementAt(AdvancedBlacklists.Instance.Configuration.Instance.pickupBlocklistNames.IndexOf(command[2].ToLower()));
                         string message = "Blocklist: " + command[2].ToLower() + " { ";
-                        foreach (var id in blocklistIDs)
+                        foreach (var id in currentBlacklist.itemIDs)
+                        {
+                            message = message + id + ", ";
+                        }
+                        UnturnedChat.Say(caller, message + "}", Color.cyan);
+                        return;
+                    }
+                    else if (command[1].ToLower() == "vehicle")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getVehicleBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        string message = "Blocklist: " + command[2].ToLower() + " { ";
+                        foreach (var id in currentBlacklist.itemIDs)
                         {
                             message = message + id + ", ";
                         }
@@ -305,13 +390,13 @@ namespace Game4Freak.AdvancedBlacklists
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist list equip|pickup <blacklist>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle <blacklist>"), Color.red);
                         return;
                     }
                 }
                 else
                 {
-                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist list equip|pickup <blacklist>"), Color.red);
+                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle <blacklist>"), Color.red);
                     return;
                 }
             }
@@ -325,9 +410,9 @@ namespace Game4Freak.AdvancedBlacklists
                 UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("help2", "AdvancedBlacklists", "/blacklist wiki"), UnityEngine.Color.cyan);
                 UnturnedChat.Say(caller, "(1) /blacklist help", UnityEngine.Color.cyan);
                 UnturnedChat.Say(caller, "(2) /blacklist wiki", UnityEngine.Color.cyan);
-                UnturnedChat.Say(caller, "(3) /blacklist add equip|pickup <blacklist> <itemID>", UnityEngine.Color.cyan);
-                UnturnedChat.Say(caller, "(4) /blacklist remove equip|pickup <blacklist> <itemID>", UnityEngine.Color.cyan);
-                UnturnedChat.Say(caller, "(5) /blacklist list equip|pickup <blacklist>", UnityEngine.Color.cyan);
+                UnturnedChat.Say(caller, "(3) /blacklist add equip|pickup|vehicle <blacklist> <itemID>", UnityEngine.Color.cyan);
+                UnturnedChat.Say(caller, "(4) /blacklist remove equip|pickup|vehicle <blacklist> <itemID>", UnityEngine.Color.cyan);
+                UnturnedChat.Say(caller, "(5) /blacklist list equip|pickup|vehicle <blacklist>", UnityEngine.Color.cyan);
             }
         }
     }
