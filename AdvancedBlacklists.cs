@@ -106,7 +106,6 @@ namespace Game4Freak.AdvancedBlacklists
             foreach (var splayer in Provider.clients)
             {
                 UnturnedPlayer player = UnturnedPlayer.FromSteamPlayer(splayer);
-                // Player Equip
                 if (player.Player.equipment.isSelected)
                 {
                     onItemEquip(player, player.Player.equipment);
