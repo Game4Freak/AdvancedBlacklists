@@ -22,7 +22,7 @@ namespace Game4Freak.AdvancedBlacklists
     public class AdvancedBlacklists : RocketPlugin<AdvancedBlacklistsConfiguration>
     {
         public static AdvancedBlacklists Instance;
-        public const string VERSION = "1.1.0.0";
+        public const string VERSION = "1.2.0.0";
         int frame;
 
         protected override void Load()
@@ -38,7 +38,7 @@ namespace Game4Freak.AdvancedBlacklists
 
         public void UpdateConfig()
         {
-            if (compareVersion(VERSION, Configuration.Instance.version))
+            if (compareVersion("1.1.0.0", Configuration.Instance.version))
             {
                 Logger.Log("Updating config");
                 for (int i = 0; i < Configuration.Instance.equipBlocklistNames.Count; i++)
@@ -113,6 +113,10 @@ namespace Game4Freak.AdvancedBlacklists
                 if (player.IsInVehicle)
                 {
                     onVehicleEnter(player, player.CurrentVehicle);
+                    if (player.CurrentVehicle.checkDriver(player.CSteamID))
+                    {
+                        onVehicleDriver(player, player.CurrentVehicle);
+                    }
                 }
             }
         }
@@ -166,6 +170,31 @@ namespace Game4Freak.AdvancedBlacklists
             }
         }
 
+        public void onVehicleDriver(UnturnedPlayer player, InteractableVehicle vehicle)
+        {
+            if (player.HasPermission(Configuration.Instance.driveIgnoreBlacklistPermission.ToLower()) || player.HasPermission(Configuration.Instance.driveIgnoreBlacklistPermission.ToLower() + ".item." + vehicle.id))
+            {
+                return;
+            }
+            foreach (var blacklist in Configuration.Instance.driveBlacklists)
+            {
+                if (!player.HasPermission(Configuration.Instance.driveIgnoreBlacklistPermission.ToLower() + ".blacklist." + blacklist.name.ToLower()) && blacklist.itemIDs.Contains(vehicle.id))
+                {
+                    UnturnedChat.Say(player, Instance.Translations.Instance.Translate("noAllow"), Color.red);
+                    bool isEmpty = false;
+                    for (int i = 0; i < vehicle.passengers.Count(); i++)
+                    {
+                        if (vehicle.passengers[i] == null)
+                        {
+                            vehicle.swapPlayer(0, (byte)i);
+                        }
+                    }
+                    if (!isEmpty)
+                        VehicleManager.forceRemovePlayer(vehicle, player.CSteamID);
+                }
+            }
+        }
+
         private bool compareVersion(string version1, string version2)
         {
             return int.Parse(version1.Replace(".", "")) > int.Parse(version2.Replace(".", ""));
@@ -198,6 +227,18 @@ namespace Game4Freak.AdvancedBlacklists
         public Blacklist getVehicleBlacklistByName(string name)
         {
             foreach (var blacklist in Configuration.Instance.vehicleBlacklists)
+            {
+                if (blacklist.name.ToLower() == name.ToLower())
+                {
+                    return blacklist;
+                }
+            }
+            return null;
+        }
+
+        public Blacklist getDriveBlacklistByName(string name)
+        {
+            foreach (var blacklist in Configuration.Instance.driveBlacklists)
             {
                 if (blacklist.name.ToLower() == name.ToLower())
                 {

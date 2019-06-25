@@ -95,9 +95,21 @@ namespace Game4Freak.AdvancedBlacklists
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("addblacklist", command[2]), Color.cyan);
                         return;
                     }
+                    else if (command[1].ToLower() == "drive")
+                    {
+                        if (AdvancedBlacklists.Instance.getDriveBlacklistByName(command[2].ToLower()) != null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("exists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        AdvancedBlacklists.Instance.Configuration.Instance.driveBlacklists.Add(new Blacklist(command[2].ToLower()));
+                        AdvancedBlacklists.Instance.Configuration.Save();
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("addblacklist", command[2]), Color.cyan);
+                        return;
+                    }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist add equip|pickup|vehicle <blacklist>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist add equip|pickup|vehicle|drive <blacklist>"), Color.red);
                         return;
                     }
                 }
@@ -163,15 +175,33 @@ namespace Game4Freak.AdvancedBlacklists
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("additem", ID, command[2].ToLower()), Color.cyan);
                         return;
                     }
+                    else if (command[1].ToLower() == "drive")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getDriveBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        if (currentBlacklist.itemIDs.Contains(ID))
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("has", command[2].ToLower(), ID), Color.red);
+                            return;
+                        }
+                        currentBlacklist.itemIDs.Add(ID);
+                        AdvancedBlacklists.Instance.Configuration.Save();
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("additem", ID, command[2].ToLower()), Color.cyan);
+                        return;
+                    }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup|vehicle|drive <blacklist> <itemID>"), Color.red);
                         return;
                     }
                 }
                 else
                 {
-                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
+                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist add equip|pickup|vehicle|drive <blacklist> <itemID>"), Color.red);
                     return;
                 }
             }
@@ -218,9 +248,22 @@ namespace Game4Freak.AdvancedBlacklists
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
                         return;
                     }
+                    else if (command[1].ToLower() == "drive")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getDriveBlacklistByName(command[2]);
+                        if (currentBlacklist != null)
+                        {
+                            AdvancedBlacklists.Instance.Configuration.Instance.driveBlacklists.Remove(currentBlacklist);
+                            AdvancedBlacklists.Instance.Configuration.Save();
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeblacklist", command[2]), Color.cyan);
+                            return;
+                        }
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                        return;
+                    }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist remove equip|pickup|vehicle <blacklist>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/ help or / blacklist remove equip|pickup|vehicle|drive <blacklist>"), Color.red);
                         return;
                     }
                 }
@@ -286,15 +329,33 @@ namespace Game4Freak.AdvancedBlacklists
                         UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("nohas", command[2].ToLower(), ID), Color.red);
                         return;
                     }
+                    else if (command[1].ToLower() == "drive")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getDriveBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        if (currentBlacklist.itemIDs.Contains(ID))
+                        {
+                            currentBlacklist.itemIDs.Remove(ID);
+                            AdvancedBlacklists.Instance.Configuration.Save();
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("removeitem", ID, command[2].ToLower()), Color.cyan);
+                            return;
+                        }
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("nohas", command[2].ToLower(), ID), Color.red);
+                        return;
+                    }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist remove equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist remove equip|pickup|vehicle|drive <blacklist> <itemID>"), Color.red);
                         return;
                     }
                 }
                 else
                 {
-                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist remove equip|pickup|vehicle <blacklist> <itemID>"), Color.red);
+                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist remove equip|pickup|vehicle|drive <blacklist> <itemID>"), Color.red);
                     return;
                 }
             }
@@ -332,9 +393,19 @@ namespace Game4Freak.AdvancedBlacklists
                         UnturnedChat.Say(caller, message, Color.cyan);
                         return;
                     }
+                    else if (command[1].ToLower() == "drive")
+                    {
+                        string message = "Drive blocklists: ";
+                        foreach (var blacklist in AdvancedBlacklists.Instance.Configuration.Instance.driveBlacklists)
+                        {
+                            message = message + blacklist.name + ", ";
+                        }
+                        UnturnedChat.Say(caller, message, Color.cyan);
+                        return;
+                    }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle|drive"), Color.red);
                         return;
                     }
                 }
@@ -388,15 +459,31 @@ namespace Game4Freak.AdvancedBlacklists
                         UnturnedChat.Say(caller, message + "}", Color.cyan);
                         return;
                     }
+                    else if (command[1].ToLower() == "drive")
+                    {
+                        Blacklist currentBlacklist = AdvancedBlacklists.Instance.getDriveBlacklistByName(command[2]);
+                        if (currentBlacklist == null)
+                        {
+                            UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("noexists", command[2].ToLower()), Color.red);
+                            return;
+                        }
+                        string message = "Blocklist: " + command[2].ToLower() + " { ";
+                        foreach (var id in currentBlacklist.itemIDs)
+                        {
+                            message = message + id + ", ";
+                        }
+                        UnturnedChat.Say(caller, message + "}", Color.cyan);
+                        return;
+                    }
                     else
                     {
-                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle <blacklist>"), Color.red);
+                        UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle|drive <blacklist>"), Color.red);
                         return;
                     }
                 }
                 else
                 {
-                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle <blacklist>"), Color.red);
+                    UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("invalid", "/help or /blacklist list equip|pickup|vehicle|drive <blacklist>"), Color.red);
                     return;
                 }
             }
@@ -410,9 +497,9 @@ namespace Game4Freak.AdvancedBlacklists
                 UnturnedChat.Say(caller, AdvancedBlacklists.Instance.Translations.Instance.Translate("help2", "AdvancedBlacklists", "/blacklist wiki"), UnityEngine.Color.cyan);
                 UnturnedChat.Say(caller, "(1) /blacklist help", UnityEngine.Color.cyan);
                 UnturnedChat.Say(caller, "(2) /blacklist wiki", UnityEngine.Color.cyan);
-                UnturnedChat.Say(caller, "(3) /blacklist add equip|pickup|vehicle <blacklist> <itemID>", UnityEngine.Color.cyan);
-                UnturnedChat.Say(caller, "(4) /blacklist remove equip|pickup|vehicle <blacklist> <itemID>", UnityEngine.Color.cyan);
-                UnturnedChat.Say(caller, "(5) /blacklist list equip|pickup|vehicle <blacklist>", UnityEngine.Color.cyan);
+                UnturnedChat.Say(caller, "(3) /blacklist add equip|pickup|vehicle|drive <blacklist> <itemID>", UnityEngine.Color.cyan);
+                UnturnedChat.Say(caller, "(4) /blacklist remove equip|pickup|vehicle|drive <blacklist> <itemID>", UnityEngine.Color.cyan);
+                UnturnedChat.Say(caller, "(5) /blacklist list equip|pickup|vehicle|drive <blacklist>", UnityEngine.Color.cyan);
             }
         }
     }

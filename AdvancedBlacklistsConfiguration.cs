@@ -12,6 +12,7 @@ namespace Game4Freak.AdvancedBlacklists
         public string equipIgnoreBlacklistPermission;
         public string pickupIgnoreBlacklistPermission;
         public string vehicleIgnoreBlacklistPermission;
+        public string driveIgnoreBlacklistPermission;
 
         // new blacklists
         [XmlArrayItem(ElementName = "equipBlacklist")]
@@ -20,6 +21,8 @@ namespace Game4Freak.AdvancedBlacklists
         public List<Blacklist> pickupBlacklists;
         [XmlArrayItem(ElementName = "vehicleBlacklist")]
         public List<Blacklist> vehicleBlacklists;
+        [XmlArrayItem(ElementName = "driveBlacklist")]
+        public List<Blacklist> driveBlacklists;
 
         // blocklists
         public List<string> equipBlocklistNames;
@@ -34,10 +37,12 @@ namespace Game4Freak.AdvancedBlacklists
             equipIgnoreBlacklistPermission = "advancedblacklists.ignore.equip";
             pickupIgnoreBlacklistPermission = "advancedblacklists.ignore.pickup";
             vehicleIgnoreBlacklistPermission = "advancedblacklists.ignore.vehicle";
+            driveIgnoreBlacklistPermission = "advancedblacklists.ignore.drive";
 
             equipBlacklists = new List<Blacklist>();
             pickupBlacklists = new List<Blacklist>();
             vehicleBlacklists = new List<Blacklist>();
+            driveBlacklists = new List<Blacklist>();
 
             equipBlocklistNames = new List<string>();
             equipBlocklist = new List<List<int>>();
